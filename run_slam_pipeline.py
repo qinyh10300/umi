@@ -1,6 +1,6 @@
 """
 Main script for UMI SLAM pipeline.
-python run_slam_pipeline.py <session_dir>
+python run_slam_pipeline.py /home/yixing/Data_Umi/pick_and_place
 """
 
 import sys
