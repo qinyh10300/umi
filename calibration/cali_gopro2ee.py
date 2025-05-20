@@ -47,15 +47,16 @@ def calibrate_hand_eye(ee_2_base_matrices, marker_2_cam_matrices):
 
 if __name__ == "__main__":
     # ee_2_base_matrices = np.load('E:\\codehub\\ViTaMIn-B\\Data_collection\\data.npy')
-    with open('E:\\codehub\\ViTaMIn-B\\Data_collection\\assets\\data\\record_cartesian_calibration(5).json', 'r') as f:
+    with open('calibration/record_cartesian_calibration.json', 'r') as f:
         ee_2_base_matrices = json.load(f)
     ee_2_base_matrices = [np.array(matrix) for matrix in ee_2_base_matrices.values()]
 
-    marker_2_cam_matrices = np.load('E:\\codehub\\ViTaMIn-B\\Data_collection\\assets\\data\\cali_cam_ee_imgs\\cam_poses.npy')
+    marker_2_cam_matrices = np.load('calibration/calibration_photos/cam_poses.npy')
+    print(ee_2_base_matrices, marker_2_cam_matrices)
     X = calibrate_hand_eye(ee_2_base_matrices, marker_2_cam_matrices)
     print("\nCamera to ee transformation matrix:")
     print(X)
     
     # 保存结果
-    np.save('cam_2_ee.npy', X)
+    np.save('calibration/cam_2_ee.npy', X)
     print("\nResult saved to cam_2_ee.npy")

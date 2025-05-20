@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 import sys
-root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+root_dir = os.path.dirname(os.path.dirname(__file__))
 # print(root_dir)
 sys.path.append(root_dir)
 
@@ -92,10 +92,10 @@ if __name__ == "__main__":
         opencv_intr_dict=raw_fisheye_intr, target_resolution=res)
     K = fisheye_intr['K']
     D = fisheye_intr['D']
-    aruco_size = 0.2 
+    aruco_size = 0.16
     target_id = 13
-    image_dir = "E:\\codehub\\ViTaMIn-B\\Data_collection\\assets\\data\\cali_cam_ee_imgs"
-    output_dir = "E:\\codehub\ViTaMIn-B\\Data_collection\\assets\\data\\cali_cam_ee_imgs"
+    image_dir = "calibration/calibration_photos"
+    output_dir = "calibration/calibration_photos"
     output_filename = "cam_poses.npy"  # Specify the output filename
     
     poses = get_poses_from_images(
