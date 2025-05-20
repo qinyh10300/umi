@@ -1,6 +1,8 @@
 """
 Usage:
-(umi): python scripts_real/eval_real_umi.py -i data/outputs/2023.10.26/02.25.30_train_diffusion_unet_timm_umi/checkpoints/latest.ckpt -o data_local/cup_test_data
+(umi): python scripts_real/eval_real_umi.py -i /home/qinyh/latest.ckpt -o data_local/try_umi
+
+sudo chmod 777 /dev/bus/usb/004/006
 
 ================ Human in control ==============
 Robot movement:
@@ -33,7 +35,7 @@ import pathlib
 import time
 from multiprocessing.managers import SharedMemoryManager
 
-from moviepy.editor import VideoFileClip
+# from moviepy.editor import VideoFileClip
 import av
 import click
 import cv2
@@ -64,7 +66,7 @@ from umi.real_world.real_inference_util import (get_real_obs_dict,
                                                 get_real_obs_resolution,
                                                 get_real_umi_obs_dict,
                                                 get_real_umi_action)
-from umi.real_world.spacemouse_shared_memory import Spacemouse
+# from umi.real_world.spacemouse_shared_memory import Spacemouse
 
 OmegaConf.register_new_resolver("eval", eval, replace=True)
 
@@ -131,8 +133,8 @@ def main(input, output, robot_ip, gripper_ip,
 
     print("steps_per_inference:", steps_per_inference)
     with SharedMemoryManager() as shm_manager:
-        with Spacemouse(shm_manager=shm_manager) as sm, \
-            KeystrokeCounter() as key_counter, \
+        # with Spacemouse(shm_manager=shm_manager) as sm, \
+        with KeystrokeCounter() as key_counter, \
             UmiEnv(
                 output_dir=output, 
                 robot_ip=robot_ip,
@@ -140,7 +142,8 @@ def main(input, output, robot_ip, gripper_ip,
                 frequency=frequency,
                 obs_image_resolution=obs_res,
                 obs_float32=True,
-                camera_reorder=[int(x) for x in camera_reorder],
+                # camera_reorder=[int(x) for x in camera_reorder],
+                camera_reorder=[0],
                 init_joints=init_joints,
                 enable_multi_cam_vis=True,
                 # latency
@@ -336,37 +339,37 @@ def main(input, output, robot_ip, gripper_ip,
                         break
 
                     precise_wait(t_sample)
-                    # get teleop command
-                    sm_state = sm.get_motion_state_transformed()
-                    # print(sm_state)
-                    dpos = sm_state[:3] * (0.5 / frequency)
-                    drot_xyz = sm_state[3:] * (1.5 / frequency)
+                    # # get teleop command
+                    # sm_state = sm.get_motion_state_transformed()
+                    # # print(sm_state)
+                    # dpos = sm_state[:3] * (0.5 / frequency)
+                    # drot_xyz = sm_state[3:] * (1.5 / frequency)
 
-                    drot = st.Rotation.from_euler('xyz', drot_xyz)
-                    target_pose[:3] += dpos
-                    target_pose[3:] = (drot * st.Rotation.from_rotvec(
-                        target_pose[3:])).as_rotvec()
-                    target_pose[2] = np.maximum(target_pose[2], 0.055)
+                    # drot = st.Rotation.from_euler('xyz', drot_xyz)
+                    # target_pose[:3] += dpos
+                    # target_pose[3:] = (drot * st.Rotation.from_rotvec(
+                    #     target_pose[3:])).as_rotvec()
+                    # target_pose[2] = np.maximum(target_pose[2], 0.055)
                     
-                    dpos = 0
-                    if sm.is_button_pressed(0):
-                        # close gripper
-                        dpos = -gripper_speed / frequency
-                    if sm.is_button_pressed(1):
-                        dpos = gripper_speed / frequency
-                    gripper_target_pos = np.clip(gripper_target_pos + dpos, 0, max_gripper_width)
+                    # dpos = 0
+                    # if sm.is_button_pressed(0):
+                    #     # close gripper
+                    #     dpos = -gripper_speed / frequency
+                    # if sm.is_button_pressed(1):
+                    #     dpos = gripper_speed / frequency
+                    # gripper_target_pos = np.clip(gripper_target_pos + dpos, 0, max_gripper_width)
 
-                    action = np.zeros((7,))
-                    action[:6] = target_pose
-                    action[-1] = gripper_target_pos     
+                    # action = np.zeros((7,))
+                    # action[:6] = target_pose
+                    # action[-1] = gripper_target_pos     
 
-                    # execute teleop command
-                    env.exec_actions(
-                        actions=[action], 
-                        timestamps=[t_command_target-time.monotonic()+time.time()],
-                        compensate_latency=False)
-                    precise_wait(t_cycle_end)
-                    iter_idx += 1
+                    # # execute teleop command
+                    # env.exec_actions(
+                    #     actions=[action], 
+                    #     timestamps=[t_command_target-time.monotonic()+time.time()],
+                    #     compensate_latency=False)
+                    # precise_wait(t_cycle_end)
+                    # iter_idx += 1
                 
                 # ========== policy control loop ==============
                 try:

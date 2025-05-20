@@ -6,7 +6,7 @@ import shutil
 import math
 import cv2
 from multiprocessing.managers import SharedMemoryManager
-from umi.real_world.rtde_interpolation_controller import RTDEInterpolationController
+# from umi.real_world.rtde_interpolation_controller import RTDEInterpolationController
 from umi.real_world.wsg_controller import WSGController
 from umi.real_world.franka_interpolation_controller import FrankaInterpolationController
 from umi.real_world.multi_uvc_camera import MultiUvcCamera, VideoRecorder
@@ -94,6 +94,7 @@ class UmiEnv:
         # Wait for all v4l cameras to be back online
         time.sleep(0.1)
         v4l_paths = get_sorted_v4l_paths()
+        # print(camera_reorder, v4l_paths)
         if camera_reorder is not None:
             paths = [v4l_paths[i] for i in camera_reorder]
             v4l_paths = paths
@@ -228,27 +229,27 @@ class UmiEnv:
         if not init_joints:
             j_init = None
 
-        if robot_type.startswith('ur5'):
-            robot = RTDEInterpolationController(
-                shm_manager=shm_manager,
-                robot_ip=robot_ip,
-                frequency=500, # UR5 CB3 RTDE
-                lookahead_time=0.1,
-                gain=300,
-                max_pos_speed=max_pos_speed*cube_diag,
-                max_rot_speed=max_rot_speed*cube_diag,
-                launch_timeout=3,
-                tcp_offset_pose=[0,0,tcp_offset,0,0,0],
-                payload_mass=None,
-                payload_cog=None,
-                joints_init=j_init,
-                joints_init_speed=1.05,
-                soft_real_time=False,
-                verbose=False,
-                receive_keys=None,
-                receive_latency=robot_obs_latency
-                )
-        elif robot_type.startswith('franka'):
+        # if robot_type.startswith('ur5'):
+        #     robot = RTDEInterpolationController(
+        #         shm_manager=shm_manager,
+        #         robot_ip=robot_ip,
+        #         frequency=500, # UR5 CB3 RTDE
+        #         lookahead_time=0.1,
+        #         gain=300,
+        #         max_pos_speed=max_pos_speed*cube_diag,
+        #         max_rot_speed=max_rot_speed*cube_diag,
+        #         launch_timeout=3,
+        #         tcp_offset_pose=[0,0,tcp_offset,0,0,0],
+        #         payload_mass=None,
+        #         payload_cog=None,
+        #         joints_init=j_init,
+        #         joints_init_speed=1.05,
+        #         soft_real_time=False,
+        #         verbose=False,
+        #         receive_keys=None,
+        #         receive_latency=robot_obs_latency
+        #         )
+        if robot_type.startswith('franka'):
             robot = FrankaInterpolationController(
                 shm_manager=shm_manager,
                 robot_ip=robot_ip,
