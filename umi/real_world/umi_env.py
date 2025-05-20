@@ -7,7 +7,8 @@ import math
 import cv2
 from multiprocessing.managers import SharedMemoryManager
 # from umi.real_world.rtde_interpolation_controller import RTDEInterpolationController
-from umi.real_world.wsg_controller import WSGController
+# from umi.real_world.wsg_controller import WSGController
+from umi.real_world.franka_gripper_controller import FrankaGripperController
 from umi.real_world.franka_interpolation_controller import FrankaInterpolationController
 from umi.real_world.multi_uvc_camera import MultiUvcCamera, VideoRecorder
 from diffusion_policy.common.timestamp_accumulator import (
@@ -36,7 +37,7 @@ class UmiEnv:
             gripper_port=1000,
             # env params
             frequency=20,
-            robot_type='ur5',
+            robot_type='franka',
             # obs
             obs_image_resolution=(224,224),
             max_obs_buffer_size=60,
@@ -249,18 +250,18 @@ class UmiEnv:
         #         receive_keys=None,
         #         receive_latency=robot_obs_latency
         #         )
-        if robot_type.startswith('franka'):
-            robot = FrankaInterpolationController(
-                shm_manager=shm_manager,
-                robot_ip=robot_ip,
-                frequency=200,
-                Kx_scale=1.0,
-                Kxd_scale=np.array([2.0,1.5,2.0,1.0,1.0,1.0]),
-                verbose=False,
-                receive_latency=robot_obs_latency
-            )
+        # if robot_type.startswith('franka'):
+        robot = FrankaInterpolationController(
+            shm_manager=shm_manager,
+            robot_ip=robot_ip,
+            frequency=200,
+            Kx_scale=1.0,
+            Kxd_scale=np.array([2.0,1.5,2.0,1.0,1.0,1.0]),
+            verbose=False,
+            receive_latency=robot_obs_latency
+        )
         
-        gripper = WSGController(
+        gripper = FrankaGripperController(
             shm_manager=shm_manager,
             hostname=gripper_ip,
             port=gripper_port,
@@ -305,6 +306,7 @@ class UmiEnv:
     # ======== start-stop API =============
     @property
     def is_ready(self):
+        # print(self.camera.is_ready, self.robot.is_ready, self.gripper.is_ready)
         return self.camera.is_ready and self.robot.is_ready and self.gripper.is_ready
     
     def start(self, wait=True):

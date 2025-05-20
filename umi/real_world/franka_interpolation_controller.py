@@ -40,7 +40,7 @@ tx_flange_tip = tx_flange_flangerot45 @ tx_flangerot45_flangerot90 @tx_flangerot
 tx_tip_flange = np.linalg.inv(tx_flange_tip)
 
 class FrankaInterface:
-    def __init__(self, ip='183.173.65.137', port=4242):
+    def __init__(self, ip='183.173.65.143', port=4242):
         self.server = zerorpc.Client(heartbeat=20)
         self.server.connect(f"tcp://{ip}:{port}")
 
@@ -172,6 +172,7 @@ class FrankaInterpolationController(mp.Process):
             
     # ========= launch method ===========
     def start(self, wait=True):
+        # print("robot start!!!")
         super().start()
         if wait:
             self.start_wait()
@@ -252,18 +253,19 @@ class FrankaInterpolationController(mp.Process):
                 0, os.SCHED_RR, os.sched_param(20))
             
         # start polymetis interface
-        robot = FrankaInterface(self.robot_ip, self.robot_port)
+        robot = FrankaInterface()
 
         try:
             if self.verbose:
                 print(f"[FrankaPositionalController] Connect to robot: {self.robot_ip}")
             
-            # init pose
-            if self.joints_init is not None:
-                robot.move_to_joint_positions(
-                    positions=np.asarray(self.joints_init),
-                    time_to_go=self.joints_init_duration
-                )
+            # # init pose
+            # if self.joints_init is not None:
+            #     robot.move_to_joint_positions(
+            #         positions=np.asarray(self.joints_init),
+            #         time_to_go=self.joints_init_duration
+            #     )
+            
 
             # main loop
             dt = 1. / self.frequency

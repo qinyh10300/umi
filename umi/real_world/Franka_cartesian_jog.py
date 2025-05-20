@@ -30,7 +30,7 @@ def askForCommand():
 
 if __name__ == "__main__":
     np.set_printoptions(precision=4, suppress=True)
-    Franka = FrankaInterface(ip='183.173.65.137', port=4242)
+    Franka = FrankaInterface(ip='183.173.65.143', port=4242)
 
     Kx_scale = 1.0
     Kxd_scale = 1.0

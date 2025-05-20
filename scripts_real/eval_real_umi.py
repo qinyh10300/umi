@@ -2,6 +2,8 @@
 Usage:
 (umi): python scripts_real/eval_real_umi.py -i /home/qinyh/latest.ckpt -o data_local/try_umi
 
+python scripts_real/eval_real_umi.py -i /home/qinyh/latest.ckpt -o data_local/try_umi
+
 sudo chmod 777 /dev/bus/usb/004/006
 
 ================ Human in control ==============
@@ -214,6 +216,8 @@ def main(input, output, robot_ip, gripper_ip,
             print('obs_pose_rep', obs_pose_rep)
             print('action_pose_repr', action_pose_repr)
 
+            # Hack
+            episode_start_pose = np.array([[0.69322, -0.016731, 0.385131, -1.824774, 1.665631, -0.803983]])
 
             device = torch.device('cuda')
             policy.eval().to(device)
@@ -224,7 +228,7 @@ def main(input, output, robot_ip, gripper_ip,
                 policy.reset()
                 obs_dict_np = get_real_umi_obs_dict(
                     env_obs=obs, shape_meta=cfg.task.shape_meta, 
-                    obs_pose_repr=obs_pose_rep)
+                    obs_pose_repr=obs_pose_rep, episode_start_pose = episode_start_pose)
                 obs_dict = dict_apply(obs_dict_np, 
                     lambda x: torch.from_numpy(x).unsqueeze(0).to(device))
                 result = policy.predict_action(obs_dict)
@@ -395,12 +399,15 @@ def main(input, output, robot_ip, gripper_ip,
                         obs_timestamps = obs['timestamp']
                         print(f'Obs latency {time.time() - obs_timestamps[-1]}')
 
+                        # Hack
+                        episode_start_pose = np.array([[0.69322, -0.016731, 0.385131, -1.824774, 1.665631, -0.803983]])
+
                         # run inference
                         with torch.no_grad():
                             s = time.time()
                             obs_dict_np = get_real_umi_obs_dict(
                                 env_obs=obs, shape_meta=cfg.task.shape_meta, 
-                                obs_pose_repr=obs_pose_rep)
+                                obs_pose_repr=obs_pose_rep, episode_start_pose = episode_start_pose)
                             obs_dict = dict_apply(obs_dict_np, 
                                 lambda x: torch.from_numpy(x).unsqueeze(0).to(device))
                             result = policy.predict_action(obs_dict)
@@ -431,13 +438,13 @@ def main(input, output, robot_ip, gripper_ip,
                             this_target_poses = this_target_poses[is_new]
                             action_timestamps = action_timestamps[is_new]
 
-                        # execute actions
-                        env.exec_actions(
-                            actions=this_target_poses,
-                            timestamps=action_timestamps,
-                            compensate_latency=True
-                        )
-                        print(f"Submitted {len(this_target_poses)} steps of actions.")
+                        # # execute actions
+                        # env.exec_actions(
+                        #     actions=this_target_poses,
+                        #     timestamps=action_timestamps,
+                        #     compensate_latency=True
+                        # )
+                        # print(f"Submitted {len(this_target_poses)} steps of actions.")
 
                         # visualize
                         episode_id = env.replay_buffer.n_episodes
@@ -464,12 +471,12 @@ def main(input, output, robot_ip, gripper_ip,
                         _ = cv2.pollKey()
                         press_events = key_counter.get_press_events()
                         stop_episode = False
-                        for key_stroke in press_events:
-                            if key_stroke == KeyCode(char='s'):
-                                # Stop episode
-                                # Hand control back to human
-                                print('Stopped.')
-                                stop_episode = True
+                        # for key_stroke in press_events:
+                        #     if key_stroke == KeyCode(char='s'):
+                        #         # Stop episode
+                        #         # Hand control back to human
+                        #         print('Stopped.')
+                        #         stop_episode = True
 
                         t_since_start = time.time() - eval_t_start
                         if t_since_start > max_duration:
