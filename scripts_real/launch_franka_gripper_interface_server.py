@@ -13,14 +13,20 @@ class FrankaGripperInterface:
         self.speed = 0.02  # [m/s]
         self.force = 20.0  # [N]
         
-    def get_state(self):
+    def get_pos(self):
         # print(f"111   {self.gripper.width}")
         return self.gripper.width
     
-    def move(self, pose):
+    def set_pos(self, pose):
         # Move the fingers to a specific width (5cm)
         return self.gripper.move(pose, self.speed)
     
+    def set_speed(self, speed=0.02):
+        self.speed = speed
+
+    def get_speed(self):
+        return self.speed
+
     def grasp(self):
         # Grasp an object of unknown width
         return self.gripper.grasp(0.0, self.speed, self.force, epsilon_outer=1.0)

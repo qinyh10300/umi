@@ -85,7 +85,7 @@ def get_poses_from_images(image_paths, camera_matrix, dist_coeffs, aruco_size, t
     return poses
 
 if __name__ == "__main__":
-    intr_json = "assets/gopro_intrinsics_2_7k.json"
+    intr_json = "example/calibration/gopro_intrinsics_2_7k.json"
     raw_fisheye_intr = parse_fisheye_intrinsics(json.load(open(intr_json, 'r')))
     res = (5568, 4176)
     fisheye_intr = convert_fisheye_intrinsics_resolution(
@@ -93,7 +93,7 @@ if __name__ == "__main__":
     K = fisheye_intr['K']
     D = fisheye_intr['D']
     aruco_size = 0.2 
-    target_id = 35
+    target_id = 13
     image_dir = "E:\\codehub\\ViTaMIn-B\\Data_collection\\assets\\data\\cali_cam_ee_imgs"
     output_dir = "E:\\codehub\ViTaMIn-B\\Data_collection\\assets\\data\\cali_cam_ee_imgs"
     output_filename = "cam_poses.npy"  # Specify the output filename
