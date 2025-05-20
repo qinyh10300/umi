@@ -602,7 +602,8 @@ def main(input, output, tcp_offset, tx_slam_tag,
 
             # basic filtering to remove bad tracking
             n_frames_lost = (~is_tracked).sum()
-            if n_frames_lost > 10:
+            # *******************修改阈值*******************
+            if n_frames_lost > 30:   
                 print(f"Skipping {video_dir.name}, {n_frames_lost} frames are lost.")
                 dropped_camera_count[row['camera_serial']] += 1
                 continue
