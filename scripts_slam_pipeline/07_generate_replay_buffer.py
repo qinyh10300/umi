@@ -1,4 +1,5 @@
 # %%
+# python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/pick_and_place/ -o /home/yixing/Data_Umi/pick_and_place/pick_and_place.zarr.zip
 import sys
 import os
 
@@ -81,6 +82,7 @@ def main(input, output, out_res, out_fov, compression_level,
         ipath = pathlib.Path(os.path.expanduser(ipath)).absolute()
         demos_path = ipath.joinpath('demos')
         plan_path = ipath.joinpath('dataset_plan.pkl')
+        # print(plan_path)
         if not plan_path.is_file():
             print(f"Skipping {ipath.name}: no dataset_plan.pkl")
             continue
