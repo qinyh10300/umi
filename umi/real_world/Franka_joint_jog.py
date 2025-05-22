@@ -26,7 +26,7 @@ def askForCommand():
 
 if __name__ == "__main__":
     np.set_printoptions(precision=4, suppress=True)
-    Franka = FrankaInterface(ip='183.173.65.143', port=4242)
+    Franka = FrankaInterface(ip='183.173.64.228', port=4242)
 
     jog_step: float = 3 # in degree
     ctrl_joint: int = 1

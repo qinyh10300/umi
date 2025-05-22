@@ -5,6 +5,7 @@ ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 sys.path.append(ROOT_DIR)
 os.chdir(ROOT_DIR)
 
+import json
 import time
 import numpy as np
 from scipy.spatial.transform import Rotation as R
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     rotation_step: float = 2 # 单位°
     last_command: str = ""
     time_to_go: float = 0.5
+    pose_dic = {}
 
     askForCommand()
     while True:
@@ -101,6 +103,21 @@ if __name__ == "__main__":
 
             # 移动机械臂
             Franka.update_desired_ee_pose(mat_to_pose(pose_current_mat))
+        elif inp == 'save':
+            pose = pose_to_mat(Franka.get_raw_ee_pos())
+            # print(pose, type(pose))
+            pose_dic[f"{pose_index}"] = pose.tolist()
+            print(f"已保存姿态 {pose_index}")
+            pose_index += 1
+        elif inp == 'q':
+            save_path = "calibration/record_cartesian_calibration.json"
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            
+            with open(save_path, 'w') as f:
+                json.dump(pose_dic, f, indent=4)
+            
+            print(f"姿态数据已保存到: {save_path}")
+            break
         else:
             askForCommand()
 
