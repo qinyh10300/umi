@@ -33,6 +33,12 @@ class FrankaInterface:
             Kxd=torch.Tensor(Kxd)
         )
 
+    def start_joint_impedance(self, Kq, Kqd):
+        self.robot.start_cartesian_impedance(
+            Kq=torch.Tensor(Kq),
+            Kqd=torch.Tensor(Kqd)
+        )
+
     def update_desired_ee_pose(self, pose):
         pose = np.asarray(pose)
         self.robot.update_desired_ee_pose(
