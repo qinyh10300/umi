@@ -27,17 +27,46 @@ class Command(enum.Enum):
     SERVOL = 1
     SCHEDULE_WAYPOINT = 2
 
-tx_flangerot90_tip = np.identity(4)
-tx_flangerot90_tip[:3, 3] = np.array([-0.0336, 0, 0.247])
+# tx_flangerot90_tip = np.identity(4)
+# tx_flangerot90_tip[:3, 3] = np.array([-0.0336, 0, 0.247])
 
-tx_flangerot45_flangerot90 = np.identity(4)
-tx_flangerot45_flangerot90[:3,:3] = st.Rotation.from_euler('x', [np.pi/2]).as_matrix()
+# tx_flangerot45_flangerot90 = np.identity(4)
+# tx_flangerot45_flangerot90[:3,:3] = st.Rotation.from_euler('x', [np.pi/2]).as_matrix()
 
-tx_flange_flangerot45 = np.identity(4)
-tx_flange_flangerot45[:3,:3] = st.Rotation.from_euler('z', [np.pi/4]).as_matrix()
+# tx_flange_flangerot45 = np.identity(4)
+# tx_flange_flangerot45[:3,:3] = st.Rotation.from_euler('z', [np.pi/4]).as_matrix()
 
-tx_flange_tip = tx_flange_flangerot45 @ tx_flangerot45_flangerot90 @tx_flangerot90_tip
-tx_tip_flange = np.linalg.inv(tx_flange_tip)
+# tx_flange_tip = tx_flange_flangerot45 @ tx_flangerot45_flangerot90 @tx_flangerot90_tip
+# tx_tip_flange = np.linalg.inv(tx_flange_tip)
+
+tx_tip_flange = np.array([
+        [
+            0.6913780543281404,
+            -0.7216249550865763,
+            -0.03540918227990871,
+            0.07736942851173806
+        ],
+        [
+            0.721941574109034,
+            0.6919347546743334,
+            -0.005163220578296544,
+            -0.0706858817450949
+        ],
+        [
+            0.02822675267198272,
+            -0.02199362339558133,
+            0.9993595604003235,
+            0.061598731910768055
+        ],
+        [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+        ]
+    ])
+
+tx_flange_tip = np.linalg.inv(tx_tip_flange)
 
 class FrankaInterface:
     def __init__(self, ip='183.173.65.143', port=4242):
