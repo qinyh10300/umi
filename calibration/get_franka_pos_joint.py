@@ -30,6 +30,17 @@ if __name__ == "__main__":
     np.set_printoptions(precision=4, suppress=True)
     Franka = FrankaInterface(ip='183.173.64.228', port=4242)
 
+    Kq_scale = 10.0
+    Kqd_scale = 10.0
+    Kq = np.array([40.0, 30.0, 50.0, 25.0, 35.0, 25.0, 10.0]) * Kq_scale
+    Kqd = np.array([4.0, 6.0, 5.0, 5.0, 3.0, 2.0, 1.0]) * Kqd_scale
+
+    # start franka joint impedance policy
+    Franka.start_joint_impedance(
+        Kq=Kq,
+        Kqd=Kqd
+    )
+
     jog_step: float = 3 # in degree
     ctrl_joint: int = 1
     last_command: str = "1"

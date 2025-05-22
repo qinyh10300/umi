@@ -68,6 +68,12 @@ class FrankaInterface:
             Kx.tolist(),
             Kxd.tolist()
         )
+
+    def start_joint_impedance(self, Kq: np.ndarray, Kqd: np.ndarray):
+        self.server.start_joint_impedance(
+            Kq.tolist(),
+            Kqd.tolist()
+        )
     
     def update_desired_ee_pose(self, pose: np.ndarray):
         # print(pose.tolist(), pose)
