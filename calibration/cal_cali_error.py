@@ -43,10 +43,10 @@ def load_poses_from_json(json_path):
     return poses
 
 # flange_2_base_matrices = np.load('E:\\codehub\\ViTaMIn-B\\Data_collection\\data.npy')
-with open('E:\\codehub\\ViTaMIn-B\\Data_collection\\assets\\data\\record_cartesian_calibration(5).json', 'r') as f:
+with open('calibration/record_cartesian_calibration.json', 'r') as f:
     ee_2_base_matrices = json.load(f)
     flange_2_base_matrices = [np.array(matrix) for matrix in ee_2_base_matrices.values()]
-marker_2_cam_matrices = np.load('E:\\codehub\\ViTaMIn-B\\Data_collection\\assets\\data\\cali_cam_ee_imgs\\cam_poses.npy')
-hand_eye_matrix = np.load('E:\\codehub\\ViTaMIn-B\\Data_collection\\cam_2_ee.npy')
+marker_2_cam_matrices = np.load('calibration/calibration_photos/cam_poses.npy')
+hand_eye_matrix = np.load('calibration/cam_2_ee.npy')
 
 avg_rotation_error, avg_translation_error = compute_hand_eye_error(flange_2_base_matrices, marker_2_cam_matrices, hand_eye_matrix)

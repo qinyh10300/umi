@@ -43,7 +43,7 @@ class UvcCamera(mp.Process):
             transform: Optional[Callable[[Dict], Dict]] = None,
             vis_transform: Optional[Callable[[Dict], Dict]] = None,
             recording_transform: Optional[Callable[[Dict], Dict]] = None,
-            video_recorder: Optional[VideoRecorder] = None,
+            # video_recorder: Optional[VideoRecorder] = None,
             verbose=False
         ):
         super().__init__()
@@ -95,15 +95,15 @@ class UvcCamera(mp.Process):
             buffer_size=128
         )
 
-        # create video recorder
-        if video_recorder is None:
-            # default to nvenc GPU encoder
-            video_recorder = VideoRecorder.create_hevc_nvenc(
-                shm_manager=shm_manager,
-                fps=capture_fps, 
-                input_pix_fmt='bgr24', 
-                bit_rate=6000*1000)
-        assert video_recorder.fps == capture_fps
+        # # create video recorder
+        # if video_recorder is None:
+        #     # default to nvenc GPU encoder
+        #     video_recorder = VideoRecorder.create_hevc_nvenc(
+        #         shm_manager=shm_manager,
+        #         fps=capture_fps, 
+        #         input_pix_fmt='bgr24', 
+        #         bit_rate=6000*1000)
+        # assert video_recorder.fps == capture_fps
 
         # copied variables
         self.shm_manager = shm_manager
@@ -117,7 +117,7 @@ class UvcCamera(mp.Process):
         self.transform = transform
         self.vis_transform = vis_transform
         self.recording_transform = recording_transform
-        self.video_recorder = video_recorder
+        # self.video_recorder = video_recorder
         self.verbose = verbose
         self.put_start_time = None
         self.num_threads = num_threads
@@ -142,27 +142,30 @@ class UvcCamera(mp.Process):
         self.put_start_time = put_start_time
         shape = self.resolution[::-1]
         data_example = np.empty(shape=shape+(3,), dtype=np.uint8)
-        self.video_recorder.start(
-            shm_manager=self.shm_manager, 
-            data_example=data_example)
+        # self.video_recorder.start(
+        #     shm_manager=self.shm_manager, 
+        #     data_example=data_example)
         # must start video recorder first to create share memories
         super().start()
         if wait:
             self.start_wait()
     
     def stop(self, wait=True):
-        self.video_recorder.stop()
+        # self.video_recorder.stop()
         self.stop_event.set()
         if wait:
             self.end_wait()
 
     def start_wait(self):
+        print("sususususu")
         self.ready_event.wait()
-        self.video_recorder.start_wait()
+        print("sususususu")
+        # self.video_recorder.start_wait()
+        # print("sususususu")
     
     def end_wait(self):
         self.join()
-        self.video_recorder.end_wait()
+        # self.video_recorder.end_wait()
 
     @property
     def is_ready(self):
@@ -205,7 +208,16 @@ class UvcCamera(mp.Process):
         cv2.setNumThreads(self.num_threads)
 
         # open VideoCapture
-        cap = cv2.VideoCapture(self.dev_video_path, cv2.CAP_V4L2)
+        self.dev_video_path = "/dev/video4"
+        print(self.dev_video_path)
+        cap = cv2.VideoCapture(self.dev_video_path)
+        # cap = cv2.VideoCapture(self.dev_video_path, cv2.CAP_V4L2)
+        print("in run")
+
+        # 检查摄像头是否成功打开
+        if not cap.isOpened():
+            print(f"错误：无法打开摄像头 ")
+            return
         
         try:
             # set resolution and fps
@@ -216,6 +228,7 @@ class UvcCamera(mp.Process):
             # set fps
             cap.set(cv2.CAP_PROP_BUFFERSIZE, self.cap_buffer_size)
             cap.set(cv2.CAP_PROP_FPS, fps)
+            
 
             # put frequency regulation
             put_idx = None
@@ -227,13 +240,18 @@ class UvcCamera(mp.Process):
             iter_idx = 0
             t_start = time.time()
             while not self.stop_event.is_set():
+
                 ts = time.time()
-                ret = cap.grab()
-                assert ret
+                # ret = cap.grab()
+                # assert ret
                 
                 # directly write into shared memory to avoid copy
-                frame = self.video_recorder.get_img_buffer()
-                ret, frame = cap.retrieve(frame)
+                # frame = self.video_recorder.get_img_buffer()
+                print("finallay 0")
+                # ret, frame = cap.retrieve()
+                ret, frame = cap.read()
+                # ret, frame = cap.retrieve(frame)
+                print("finallay 1")
                 t_recv = time.time()
                 assert ret
                 mt_cap = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000
@@ -241,8 +259,8 @@ class UvcCamera(mp.Process):
                 t_cal = t_recv - self.receive_latency # calibrated latency
                      
                 # record frame
-                if self.video_recorder.is_ready():
-                    self.video_recorder.write_img_buffer(frame, frame_time=t_cal)
+                # if self.video_recorder.is_ready():
+                #     self.video_recorder.write_img_buffer(frame, frame_time=t_cal)
 
                 data = dict()
                 data['camera_receive_timestamp'] = t_recv
@@ -282,6 +300,7 @@ class UvcCamera(mp.Process):
                 # signal ready
                 if iter_idx == 0:
                     self.ready_event.set()
+
                     
                 # put to vis
                 vis_data = data
@@ -321,13 +340,14 @@ class UvcCamera(mp.Process):
                         start_time = command['recording_start_time']
                         if start_time < 0:
                             start_time = None
-                        self.video_recorder.start_recording(video_path, start_time=start_time)
+                        # self.video_recorder.start_recording(video_path, start_time=start_time)
                     elif cmd == Command.STOP_RECORDING.value:
-                        self.video_recorder.stop_recording()
+                        # self.video_recorder.stop_recording()
+                        pass
 
                 iter_idx += 1
         finally:
-            self.video_recorder.stop()
+            # self.video_recorder.stop()
             # When everything done, release the capture
             cap.release()
 
