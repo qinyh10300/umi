@@ -9,7 +9,7 @@ import numpy as np
 import zerorpc
 
 class FrankaGripperInterface:
-    def __init__(self, ip='183.173.65.143', port=4241):
+    def __init__(self, ip='183.173.66.202', port=4241):
         self.server = zerorpc.Client(heartbeat=20)
         self.server.connect(f"tcp://{ip}:{port}")
 

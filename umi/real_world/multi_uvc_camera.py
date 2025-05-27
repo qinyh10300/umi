@@ -65,7 +65,7 @@ class MultiUvcCamera:
                 transform=transform[i],
                 vis_transform=vis_transform[i],
                 recording_transform=recording_transform[i],
-                video_recorder=video_recorder[i],
+                # video_recorder=video_recorder[i],
                 verbose=verbose
             )
 
@@ -108,7 +108,10 @@ class MultiUvcCamera:
             self.stop_wait()
 
     def start_wait(self):
+        print(self.cameras)
+        print('-'*10)
         for camera in self.cameras.values():
+            print(camera)
             camera.start_wait()
 
     def stop_wait(self):

@@ -90,15 +90,16 @@ class UmiEnv:
 
         # Find and reset all Elgato capture cards.
         # Required to workaround a firmware bug.
-        reset_all_elgato_devices()
+        # reset_all_elgato_devices()
 
         # Wait for all v4l cameras to be back online
         time.sleep(0.1)
-        v4l_paths = get_sorted_v4l_paths()
-        # print(camera_reorder, v4l_paths)
-        if camera_reorder is not None:
-            paths = [v4l_paths[i] for i in camera_reorder]
-            v4l_paths = paths
+        # v4l_paths = get_sorted_v4l_paths()
+        # # print(camera_reorder, v4l_paths)
+        # if camera_reorder is not None:
+        #     paths = [v4l_paths[i] for i in camera_reorder]
+        #     v4l_paths = paths
+        v4l_paths = ['/dev/video2']
 
         # compute resolution for vis
         rw, rh, col, row = optimal_row_cols(
@@ -225,10 +226,10 @@ class UmiEnv:
                 rgb_to_bgr=False
             )
 
-        cube_diag = np.linalg.norm([1,1,1])
-        j_init = np.array([0,-90,-90,-90,90,0]) / 180 * np.pi
-        if not init_joints:
-            j_init = None
+        # cube_diag = np.linalg.norm([1,1,1])
+        # j_init = np.array([0,-90,-90,-90,90,0]) / 180 * np.pi
+        # if not init_joints:
+        #     j_init = None
 
         # if robot_type.startswith('ur5'):
         #     robot = RTDEInterpolationController(
@@ -302,6 +303,7 @@ class UmiEnv:
         self.action_accumulator = None
 
         self.start_time = None
+
     
     # ======== start-stop API =============
     @property
@@ -329,11 +331,16 @@ class UmiEnv:
             self.stop_wait()
 
     def start_wait(self):
+        print("successfully init")
         self.camera.start_wait()
+        print("successfully init")
         self.gripper.start_wait()
+        print("successfully init")
         self.robot.start_wait()
+        print("successfully init")
         if self.multi_cam_vis is not None:
             self.multi_cam_vis.start_wait()
+        print("successfully init")
     
     def stop_wait(self):
         self.robot.stop_wait()

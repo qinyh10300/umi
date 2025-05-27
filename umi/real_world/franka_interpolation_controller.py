@@ -69,7 +69,7 @@ tx_tip_flange = np.array([
 tx_flange_tip = np.linalg.inv(tx_tip_flange)
 
 class FrankaInterface:
-    def __init__(self, ip='183.173.65.143', port=4242):
+    def __init__(self, ip='183.173.66.202', port=4242):
         self.server = zerorpc.Client(heartbeat=20)
         self.server.connect(f"tcp://{ip}:{port}")
 
@@ -333,6 +333,7 @@ class FrankaInterpolationController(mp.Process):
                 flange_pose = mat_to_pose(pose_to_mat(tip_pose) @ tx_tip_flange)
 
                 # send command to robot
+                # print(flange_pose)
                 robot.update_desired_ee_pose(flange_pose)
 
                 # update robot state
