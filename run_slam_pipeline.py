@@ -3,6 +3,12 @@ Main script for UMI SLAM pipeline.
 
 python run_slam_pipeline.py /home/yixing/Data_Umi/pick_and_place
 python run_slam_pipeline.py /home/yixing/Data_Umi/touch
+python run_slam_pipeline.py /home/yixing/Data_Umi/pick_place_5_28
+python run_slam_pipeline.py /home/yixing/Data_Umi/pick_place_cup_5_28
+python run_slam_pipeline.py /home/yixing/Data_Umi/sponge_5_28
+python run_slam_pipeline.py /home/yixing/Data_Umi/maojin_5_28
+python run_slam_pipeline.py /home/yixing/Data_Umi/pick_and_place_5_31
+python run_slam_pipeline.py /home/yixing/Data_Umi/maojin_5_31
 """
 
 import sys

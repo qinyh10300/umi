@@ -659,6 +659,7 @@ def main(input, output, tcp_offset, tx_slam_tag,
             right_id = left_id + 1
 
             gripper_cal_interp = None
+            # print(ghi, gripper_id_gripper_cal_map, row['camera_serial'], cam_serial_gripper_cal_map)
             if ghi in gripper_id_gripper_cal_map:
                 gripper_cal_interp = gripper_id_gripper_cal_map[ghi]
             elif row['camera_serial'] in cam_serial_gripper_cal_map:

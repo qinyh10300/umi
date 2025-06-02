@@ -1,8 +1,6 @@
 import zerorpc
-from polymetis import GripperInterface
 import scipy.spatial.transform as st
 import numpy as np
-import torch
 
 import franky
 

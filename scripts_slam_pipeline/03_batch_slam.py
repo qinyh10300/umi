@@ -40,7 +40,7 @@ def runner(cmd, cwd, stdout_path, stderr_path, timeout, **kwargs):
 @click.option('-i', '--input_dir', required=True, help='Directory for demos folder')
 @click.option('-m', '--map_path', default=None, help='ORB_SLAM3 *.osa map atlas file')
 @click.option('-d', '--docker_image', default="chicheng/orb_slam3:latest")
-@click.option('-n', '--num_workers', type=int, default=None)
+@click.option('-n', '--num_workers', type=int, default=4)
 @click.option('-ml', '--max_lost_frames', type=int, default=60)
 @click.option('-tm', '--timeout_multiple', type=float, default=16, help='timeout_multiple * duration = timeout')
 @click.option('-np', '--no_docker_pull', is_flag=True, default=False, help="pull docker image from docker hub")
@@ -58,6 +58,9 @@ def main(input_dir, map_path, docker_image, num_workers, max_lost_frames, timeou
 
     if num_workers is None:
         num_workers = multiprocessing.cpu_count() // 2
+
+    print(f"num_workers: {num_workers}")
+    # exit(0)
 
     # pull docker
     if not no_docker_pull:

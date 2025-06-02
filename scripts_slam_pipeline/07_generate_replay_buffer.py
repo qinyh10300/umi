@@ -1,5 +1,11 @@
 # %%
 # python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/pick_and_place/ -o /home/yixing/Data_Umi/pick_and_place/pick_and_place.zarr.zip
+# python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/pick_place_5_28/ -o /home/yixing/Data_Umi/pick_place_5_28/pick_place_5_28.zarr.zip
+# python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/pick_place_cup_5_28/ -o /home/yixing/Data_Umi/pick_place_cup_5_28/pick_place_cup_5_28.zarr.zip
+# python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/sponge_5_28/ -o /home/yixing/Data_Umi/sponge_5_28/sponge_5_28.zarr.zip
+# python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/pick_and_place_5_31/ -o /home/yixing/Data_Umi/pick_and_place_5_31/pick_and_place_5_31.zarr.zip
+# python scripts_slam_pipeline/07_generate_replay_buffer.py /home/yixing/Data_Umi/maojin_5_28/ /home/yixing/Data_Umi/maojin_5_31/ -o /home/yixing/Data_Umi/maojin_5_31/maojin_5_31.zarr.zip
+# maojin_5_31
 import sys
 import os
 
